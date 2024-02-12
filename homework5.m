@@ -1,13 +1,11 @@
 %% Cs damping rates analysis: 
 
-Cs_array = logspace(log10(0.1), log10(100), 7);
-Ct_array = logspace(log10(0.1), log10(100), 7);
+Cs_array = logspace(log10(0.1), log10(1000), 10);
+Ct_array = 0.1; %logspace(log10(0.1), log10(100), 7);
 
-% Cs_array = logspace(log10(0.1), log10(3000*0.224), 5);
-% Ct_array = linspace(11.2, 67.2, 5);
 
-Kt = 1000*12; % lbs/ft 
-Ks = 100*12; % lbs/ft
+Kt = 1000*12; % lbs/ft A conversion factor of 12 is applied here to make units compatible with feet and slugs
+Ks = 100*12; % lbs/ft A conversion factor of 12 is applied here to make units compatible with feet and slugs
 g = 32.174; % ft/sec^2
 Ws = 1000; % lbs
 Wu = 100; % lbs
@@ -192,7 +190,7 @@ function [mgs, mgu, w] = twomass_inertial_damp(Ks, Kt, Cs, Ct, ms, mu)
     A=[ 0,  1,  0,  0;
         -Ks/ms, -Cs/ms,  Ks/ms,  0;
          0,   0,   0,   1;
-         Ks/mu,  Cs/mu,  -(Ks+Kt)/mu,  0];
+         Ks/mu,  0,  -(Ks+Kt)/mu,  -Ct/mu]; %Ks/mu,  Cs/mu,  -(Ks+Kt)/mu,  0];
      
     B=[0, 0;
         0, 0;
