@@ -81,12 +81,22 @@ ms = Ws / g;  % Sprung mass (slugs)
 mu = Wu / g; % Unsprung mass (slugs)
 
 % Legend arrays:
-legendEntries = cell(1, 2*length(Cs_array)); % Initialize the cell array
+legendTopEntries = cell(1, 4*length(Cs_array)); % Initialize the cell array
+legendBottomEntries = cell(1, 4*length(Cs_array)); % Initialize the cell array
 legendCounter = 1; % Initialize a counter for legend entries
 
 figure; % Create the first figure outside the loop
+% xscale log;
+% hold on; % Hold on to plot multiple lines
+
+% subplots:
+subplot(2,1,1);
 xscale log;
-hold on; % Hold on to plot multiple lines
+hold on;
+
+subplot(2,1,2);
+xscale log;
+hold on;
 
 
 for i=1:length(Cs_array)
@@ -95,23 +105,29 @@ for i=1:length(Cs_array)
 
     % plot:
     subplot(2,1,1);
-    hold on;
     [mgs, mgu, w] = twomass_rel_damp(Ks, Kt, Cs, Ct, ms, mu);
-    semilogx(w', mgs, '--'); % Plot the magnitude vs frequency for the sprung mass
+
+    semilogx(w', mgs, 'o-'); % Plot the magnitude vs frequency for the sprung mass
+    legendTopEntries{legendCounter} = sprintf('Sprung mass Cs = %.2f, Ct = %.2f', Cs, Ct);
+    % legendCounter = legendCounter + 1;
+
     semilogx(w, mgu, '--'); % Plot the magnitude vs frequency for the unsprung mass
-    % legend:
-    legendEntries{legendCounter} = sprintf('Relative: Cs = %.2f, Ct = %.2f', Cs, Ct);
+    legendBottomEntries{legendCounter} = sprintf('Unsprung mass Cs = %.2f, Ct = %.2f', Cs, Ct);
     legendCounter = legendCounter + 1;
+
     
     % plot:
     subplot(2,1,2);
-    hold on;
     [mgs, mgu, w] = twomass_inertial_damp(Ks, Kt, Cs, Ct, ms, mu);
+
     semilogx(w, mgs, 'o-'); % Plot the magnitude vs frequency for the sprung mass
-    semilogx(w, mgu, 'o-'); % Plot the magnitude vs frequency for the unsprung mass
-    % legend:
-    legendEntries{legendCounter} = sprintf('Inertial: Cs = %.2f, Ct = %.2f', Cs, Ct);
+    legendTopEntries{legendCounter} = sprintf('Sprung mass Cs = %.2f, Ct = %.2f', Cs, Ct);
+    % legendCounter = legendCounter + 1;
+
+    semilogx(w, mgu, '--'); % Plot the magnitude vs frequency for the unsprung mass
+    legendBottomEntries{legendCounter} = sprintf('Sprung mass Cs = %.2f, Ct = %.2f', Cs, Ct);
     legendCounter = legendCounter + 1;
+
 end
 
 % TODO UNCOMMENT ME
@@ -127,11 +143,18 @@ end
 %     legendCounter = legendCounter + 1;
 % end
 
-legend(legendEntries{1:2*length(Cs_array)}); % Create the legend for the first figure
-title('Transmissibility plot varying Cs');
+subplot(2,1,1);
+title('Relative damping transmissibility plot varying Cs');
+legend(legendTopEntries{1:2*length(Cs_array)}); % Create the legend for the first figure
 xlabel('frequency [rad/sec]');
 ylabel('amplitude ratio');
-hold off; % Release the hold after plotting
+
+subplot(2,1,2);
+title('Inertial damping transmissibility plot varying Cs');
+legend(legendBottomEntries{1:2*length(Cs_array)}); % Create the legend for the first figure
+xlabel('frequency [rad/sec]');
+ylabel('amplitude ratio');
+
 
 
 
